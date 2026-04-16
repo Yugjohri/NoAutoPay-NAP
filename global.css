@@ -248,35 +248,35 @@
     }
 
     .auth-logo-wrap {
-        @apply mb-7 flex-row items-center gap-3;
+        @apply mb-4 flex-row items-center gap-2;
     }
 
     .auth-logo-mark {
-        @apply relative size-14 items-center justify-center rounded-2xl bg-accent;
+        @apply relative size-10 items-center justify-center rounded-xl bg-accent;
     }
 
     .auth-logo-mark-text {
-        @apply text-2xl font-sans-extrabold text-background;
+        @apply text-base font-sans-extrabold text-background;
     }
 
     .auth-wordmark {
-        @apply text-3xl font-sans-extrabold text-primary;
+        @apply text-2xl font-sans-extrabold text-primary;
     }
 
     .auth-wordmark-sub {
-        @apply -mt-1 text-xs font-sans-semibold uppercase tracking-[1px] text-muted-foreground;
+        @apply text-[10px] font-sans-semibold uppercase tracking-[1px] text-muted-foreground;
     }
 
     .auth-title {
-        @apply text-3xl font-sans-bold text-primary;
+        @apply mt-3 text-4xl font-sans-bold text-primary;
     }
 
     .auth-subtitle {
-        @apply mt-2 max-w-[320px] text-center text-base font-sans-medium text-muted-foreground;
+        @apply mt-3 w-full self-center text-center text-base font-sans-medium text-muted-foreground;
     }
 
     .auth-card {
-        @apply mt-8 rounded-3xl border border-border bg-card p-5;
+        @apply mt-8 rounded-3xl border border-border bg-card p-5 gap-5;
     }
 
     .auth-form {
@@ -308,7 +308,7 @@
     }
 
     .auth-button {
-        @apply mt-1 items-center rounded-2xl bg-accent py-4;
+        @apply items-center rounded-2xl bg-accent py-4;
     }
 
     .auth-button-disabled {
