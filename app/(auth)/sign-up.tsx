@@ -52,6 +52,7 @@ export default function SignUp() {
         type: 'success' | 'error'
         message: string
     } | null>(null)
+    const [sendCodeError, setSendCodeError] = useState<string | null>(null)
 
     const isLoading = fetchStatus === 'fetching'
     const isVerifying =
@@ -97,7 +98,14 @@ export default function SignUp() {
 
         if (error) return
 
-        await signUp.verifications.sendEmailCode()
+        try {
+            const { error: sendError } = await signUp.verifications.sendEmailCode()
+            if (sendError) {
+                setSendCodeError(sendError.message ?? 'Failed to send verification code. Tap "Resend code" to try again.')
+            }
+        } catch {
+            setSendCodeError('Failed to send verification code. Tap "Resend code" to try again.')
+        }
     }
 
     async function handleVerify() {
@@ -130,6 +138,7 @@ export default function SignUp() {
                     message: error.message ?? 'Failed to send code. Try again.',
                 })
             } else {
+                setSendCodeError(null)
                 setResendFeedback({
                     type: 'success',
                     message: 'Code sent — check your inbox.',
@@ -183,6 +192,9 @@ export default function SignUp() {
                             </Text>
 
                             <View className="auth-card">
+                                {sendCodeError ? (
+                                    <Text className="auth-error">{sendCodeError}</Text>
+                                ) : null}
                                 <View className="auth-form">
                                     <View className="auth-field">
                                         <Text className="auth-label">Verification code</Text>
