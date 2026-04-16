@@ -2,7 +2,7 @@ import {SplashScreen, Stack} from "expo-router";
 import '@/global.css';
 import {useEffect} from "react";
 import {useFonts} from "expo-font";
-
+SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const[fontsLoaded] = useFonts({
     'sans-regular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
