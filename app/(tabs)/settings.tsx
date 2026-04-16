@@ -26,8 +26,12 @@ const Settings = () => {
         : '—'
 
     async function handleSignOut() {
-        await signOut()
-        router.replace('/(auth)/sign-in')
+        try {
+            await signOut()
+            router.replace('/(auth)/sign-in')
+        } catch (e) {
+            console.error('Sign-out failed:', e)
+        }
     }
 
     return (

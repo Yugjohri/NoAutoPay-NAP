@@ -47,6 +47,11 @@ export default function SignUp() {
         confirmPassword?: string
         code?: string
     }>({})
+    const [isResending, setIsResending] = useState(false)
+    const [resendFeedback, setResendFeedback] = useState<{
+        type: 'success' | 'error'
+        message: string
+    } | null>(null)
 
     const isLoading = fetchStatus === 'fetching'
     const isVerifying =
@@ -98,10 +103,11 @@ export default function SignUp() {
     async function handleVerify() {
         if (!validateCode()) return
 
-        await signUp.verifications.verifyEmailCode({ code: code.trim() })
+        const { error: verifyError } = await signUp.verifications.verifyEmailCode({ code: code.trim() })
+        if (verifyError) return
 
         if (signUp.status === 'complete') {
-            await signUp.finalize({
+            const { error: finalizeError } = await signUp.finalize({
                 navigate: ({ decorateUrl }) => {
                     const url = decorateUrl('/(tabs)')
                     if (!url.startsWith('http')) {
@@ -109,11 +115,34 @@ export default function SignUp() {
                     }
                 },
             })
+            if (finalizeError) console.error('Sign-up finalize error:', finalizeError)
         }
     }
 
     async function handleResend() {
-        await signUp.verifications.sendEmailCode()
+        setIsResending(true)
+        setResendFeedback(null)
+        try {
+            const { error } = await signUp.verifications.sendEmailCode()
+            if (error) {
+                setResendFeedback({
+                    type: 'error',
+                    message: error.message ?? 'Failed to send code. Try again.',
+                })
+            } else {
+                setResendFeedback({
+                    type: 'success',
+                    message: 'Code sent — check your inbox.',
+                })
+            }
+        } catch {
+            setResendFeedback({
+                type: 'error',
+                message: 'Something went wrong. Try again.',
+            })
+        } finally {
+            setIsResending(false)
+        }
     }
 
     // ── Derived error messages ────────────────────────────────────────────────
@@ -191,13 +220,25 @@ export default function SignUp() {
                             </View>
 
                             <Pressable
-                                className="auth-secondary-button"
-                                style={{ marginTop: 12 }}
+                                className={`auth-secondary-button mt-3${isResending ? ' opacity-50' : ''}`}
                                 onPress={handleResend}
-                                disabled={isLoading}
+                                disabled={isLoading || isResending}
                             >
-                                <Text className="auth-secondary-button-text">Resend code</Text>
+                                <Text className="auth-secondary-button-text">
+                                    {isResending ? 'Sending…' : 'Resend code'}
+                                </Text>
                             </Pressable>
+                            {resendFeedback ? (
+                                <Text
+                                    className={`mt-2 text-center text-xs font-sans-medium ${
+                                        resendFeedback.type === 'success'
+                                            ? 'text-success'
+                                            : 'text-destructive'
+                                    }`}
+                                >
+                                    {resendFeedback.message}
+                                </Text>
+                            ) : null}
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
