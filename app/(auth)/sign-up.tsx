@@ -1,6 +1,7 @@
 import { useSignUp } from '@clerk/expo'
 import { type Href, Link, useRouter } from 'expo-router'
 import { styled } from 'nativewind'
+import { usePostHog } from 'posthog-react-native'
 import React, { useState } from 'react'
 import {
     KeyboardAvoidingView,
@@ -36,6 +37,7 @@ function BrandBlock() {
 export default function SignUp() {
     const { signUp, errors, fetchStatus } = useSignUp()
     const router = useRouter()
+    const posthog = usePostHog()
 
     const [emailAddress, setEmailAddress] = useState('')
     const [password, setPassword] = useState('')
@@ -96,7 +98,10 @@ export default function SignUp() {
             password,
         })
 
-        if (error) return
+        if (error) {
+            posthog.capture('user_sign_up_failed', { stage: 'registration', error: error.message })
+            return
+        }
 
         try {
             const { error: sendError } = await signUp.verifications.sendEmailCode()
@@ -112,13 +117,17 @@ export default function SignUp() {
         if (!validateCode()) return
 
         const { error: verifyError } = await signUp.verifications.verifyEmailCode({ code: code.trim() })
-        if (verifyError) return
+        if (verifyError) {
+            posthog.capture('user_sign_up_failed', { stage: 'verification', error: verifyError.message })
+            return
+        }
 
         if (signUp.status === 'complete') {
             const { error: finalizeError } = await signUp.finalize({
                 navigate: ({ decorateUrl }) => {
                     const url = decorateUrl('/(tabs)')
                     if (!url.startsWith('http')) {
+                        posthog.capture('user_signed_up', { method: 'email' })
                         router.replace(url as Href)
                     }
                 },

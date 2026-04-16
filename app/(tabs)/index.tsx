@@ -1,5 +1,6 @@
 import "@/global.css"
 import { useUser } from "@clerk/expo";
+import { usePostHog } from "posthog-react-native";
 import {Text, View, Image, FlatList} from "react-native";
 import {Link} from "expo-router";
 import {SafeAreaView as RNSafeAreaView} from "react-native-safe-area-context";
@@ -18,6 +19,7 @@ const SafeAreaView = styled(RNSafeAreaView);
 export default function App() {
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null);
     const { user } = useUser();
+    const posthog = usePostHog();
 
     const displayName = user?.fullName
         ?? user?.firstName
@@ -79,8 +81,14 @@ export default function App() {
                     renderItem={({item}) =>(
                         <SubscriptionCard { ...item}
                             expanded={expandedSubscriptionId === item.id}
-                            onPress={() => setExpandedSubscriptionId((currentId) =>
-                                (currentId === item.id ? null :item.id))} />
+                            onPress={() => {
+                                const isExpanding = expandedSubscriptionId !== item.id
+                                setExpandedSubscriptionId(isExpanding ? item.id : null)
+                                posthog.capture(
+                                    isExpanding ? 'subscription_expanded' : 'subscription_collapsed',
+                                    { subscription_id: item.id },
+                                )
+                            }} />
                     )}
                     extraData = {expandedSubscriptionId}
                     ItemSeparatorComponent ={() => <View className='h-4' />}

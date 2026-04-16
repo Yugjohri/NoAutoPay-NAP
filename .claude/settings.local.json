@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx @posthog/wizard --help)",
+      "Bash(node -e \"const pkg = require\\('./package.json'\\); const ph = pkg.dependencies['posthog-react-native']; console.log\\('posthog-react-native:', ph || 'NOT FOUND'\\)\")",
+      "Bash(node -e \"require\\('posthog-react-native'\\); console.log\\('Module resolves OK'\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -X POST \"https://eu.i.posthog.com/capture/\" -H \"Content-Type: application/json\" -d \"{\\\\\"api_key\\\\\":\\\\\"phc_wfj9fSe3Ram8b7wtWRWbBVxCL6vp9wFb23HFZAAu5xec\\\\\",\\\\\"event\\\\\":\\\\\"posthog_setup_test\\\\\",\\\\\"distinct_id\\\\\":\\\\\"nap-setup-check\\\\\",\\\\\"properties\\\\\":{\\\\\"source\\\\\":\\\\\"setup-verification\\\\\"}}\")"
+    ]
+  }
+}
