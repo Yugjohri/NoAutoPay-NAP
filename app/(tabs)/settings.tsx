@@ -2,6 +2,7 @@ import { useClerk, useUser } from '@clerk/expo'
 import dayjs from 'dayjs'
 import { useRouter } from 'expo-router'
 import { styled } from 'nativewind'
+import { usePostHog } from 'posthog-react-native'
 import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context'
 import images from '@/constants/images'
@@ -12,6 +13,7 @@ const Settings = () => {
     const { signOut } = useClerk()
     const { user } = useUser()
     const router = useRouter()
+    const posthog = usePostHog()
 
     const displayName =
         user?.fullName ??
@@ -28,6 +30,8 @@ const Settings = () => {
     async function handleSignOut() {
         try {
             await signOut()
+            posthog.capture('user_signed_out')
+            posthog.reset()
             router.replace('/(auth)/sign-in')
         } catch (e) {
             console.error('Sign-out failed:', e)

@@ -1,6 +1,7 @@
 import { useSignIn } from '@clerk/expo'
 import { type Href, Link, useRouter } from 'expo-router'
 import { styled } from 'nativewind'
+import { usePostHog } from 'posthog-react-native'
 import React, { useState } from 'react'
 import {
     KeyboardAvoidingView,
@@ -14,12 +15,14 @@ import {
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context'
 
 const SafeAreaView = styled(RNSafeAreaView)
+const inputStyle = { includeFontPadding: false, textAlignVertical: 'center' as const }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function SignIn() {
     const { signIn, errors, fetchStatus } = useSignIn()
     const router = useRouter()
+    const posthog = usePostHog()
 
     const [emailAddress, setEmailAddress] = useState('')
     const [password, setPassword] = useState('')
@@ -48,7 +51,10 @@ export default function SignIn() {
             password,
         })
 
-        if (error) return
+        if (error) {
+            posthog.capture('user_sign_in_failed', { error: error.message })
+            return
+        }
 
         if (signIn.status === 'complete') {
             await signIn.finalize({
@@ -57,6 +63,7 @@ export default function SignIn() {
                     if (url.startsWith('http')) {
                         // web fallback — shouldn't happen in native
                     } else {
+                        posthog.capture('user_signed_in', { method: 'email' })
                         router.replace(url as Href)
                     }
                 },
@@ -106,6 +113,7 @@ export default function SignIn() {
                                     <Text className="auth-label">Email address</Text>
                                     <TextInput
                                         className={`auth-input${emailError ? ' auth-input-error' : ''}`}
+                                        style={inputStyle}
                                         value={emailAddress}
                                         onChangeText={(v) => {
                                             setEmailAddress(v)
@@ -138,8 +146,12 @@ export default function SignIn() {
                                         placeholder="Your password"
                                         placeholderTextColor="rgba(0,0,0,0.3)"
                                         secureTextEntry
-                                        textContentType="password"
-                                        autoComplete="password"
+                                        textContentType="none"
+                                        autoComplete="off"
+                                        autoCorrect={false}
+                                        autoCapitalize="none"
+                                        spellCheck={false}
+                                        style={inputStyle}
                                         returnKeyType="done"
                                         onSubmitEditing={handleSubmit}
                                     />
@@ -163,7 +175,7 @@ export default function SignIn() {
 
                         {/* Switch to sign-up */}
                         <View className="auth-link-row">
-                            <Text className="auth-link-copy">Don't have an account?</Text>
+                            <Text className="auth-link-copy">Don&apos;t have an account?</Text>
                             <Link href="/(auth)/sign-up" asChild>
                                 <Pressable>
                                     <Text className="auth-link">Sign up</Text>

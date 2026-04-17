@@ -291,8 +291,9 @@
         @apply text-sm font-sans-semibold text-primary;
     }
 
-    .auth-input {
-        @apply rounded-2xl border border-border bg-background px-4 py-4 text-base font-sans-medium text-primary;
+    .auth-input,
+    .search-input {
+        @apply min-h-14 rounded-2xl border border-border bg-background px-4 py-3.5 text-base font-sans-medium leading-6 text-primary;
     }
 
     .auth-input-error {
