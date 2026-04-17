@@ -132,15 +132,15 @@
     }
 
     .upcoming-price {
-        @apply text-lg font-sans-bold text-primary;
+        @apply text-base font-sans-bold text-primary;
     }
 
     .upcoming-meta {
-        @apply text-sm font-sans-semibold text-muted-foreground;
+        @apply text-xs font-sans-semibold text-muted-foreground;
     }
 
     .upcoming-name {
-        @apply mt-2 text-lg font-sans-bold text-primary;
+        @apply mt-2 text-base font-sans-bold text-primary;
     }
 
     .sub-card {
@@ -418,5 +418,109 @@
 
     .category-chip-text-active {
         @apply text-accent;
+    }
+
+    .insights-header {
+        @apply mb-4;
+    }
+
+    .insights-title {
+        @apply text-3xl font-sans-bold text-primary;
+    }
+
+    .insights-subtitle {
+        @apply mt-1 text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-hero-card {
+        @apply rounded-3xl bg-accent p-5;
+    }
+
+    .insights-hero-label {
+        @apply text-base font-sans-semibold text-white/80;
+    }
+
+    .insights-hero-value {
+        @apply mt-2 text-4xl font-sans-extrabold text-white;
+    }
+
+    .insights-hero-meta {
+        @apply mt-2 text-sm font-sans-medium text-white;
+    }
+
+    .insights-stats-grid {
+        @apply my-4 flex-row gap-3;
+    }
+
+    .insights-stat-card {
+        @apply flex-1 rounded-2xl border border-border bg-card p-4;
+    }
+
+    .insights-stat-label {
+        @apply text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .insights-stat-value {
+        @apply mt-2 text-2xl font-sans-bold text-primary;
+    }
+
+    .insights-section-card {
+        @apply mb-4 rounded-2xl border border-border bg-card p-4;
+    }
+
+    .insights-section-title {
+        @apply text-lg font-sans-bold text-primary;
+    }
+
+    .insights-bar-row {
+        @apply mt-3;
+    }
+
+    .insights-bar-copy {
+        @apply mb-1 flex-row items-center justify-between;
+    }
+
+    .insights-bar-label {
+        @apply text-sm font-sans-semibold text-primary;
+    }
+
+    .insights-bar-value {
+        @apply text-sm font-sans-semibold text-muted-foreground;
+    }
+
+    .insights-bar-track {
+        @apply h-2.5 rounded-full bg-muted;
+    }
+
+    .insights-bar-fill {
+        @apply h-2.5 rounded-full bg-accent;
+    }
+
+    .insights-chip-row {
+        @apply mt-3 flex-row items-center justify-between rounded-xl border border-border bg-background px-3 py-2;
+    }
+
+    .insights-chip-label {
+        @apply text-sm font-sans-semibold text-primary;
+    }
+
+    .insights-chip-value {
+        @apply text-sm font-sans-bold text-accent;
+    }
+
+    .insights-renewal-row {
+        @apply mt-3 flex-row items-center justify-between rounded-xl border border-border bg-background px-3 py-2.5;
+    }
+
+    .insights-renewal-name {
+        @apply text-sm font-sans-semibold text-primary;
+    }
+
+    .insights-renewal-meta {
+        @apply mt-0.5 text-xs font-sans-medium text-muted-foreground;
+    }
+
+    .insights-renewal-amount {
+        @apply text-sm font-sans-bold text-primary;
     }
 }

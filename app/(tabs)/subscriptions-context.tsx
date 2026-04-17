@@ -5,6 +5,7 @@ import { HOME_SUBSCRIPTIONS } from "@/constants/data";
 interface SubscriptionsContextValue {
     subscriptions: Subscription[];
     addSubscription: (subscription: Subscription) => void;
+    removeSubscription: (subscriptionId: string) => void;
 }
 
 const SubscriptionsContext = createContext<SubscriptionsContextValue | undefined>(undefined);
@@ -17,6 +18,11 @@ export const SubscriptionsProvider = ({ children }: { children: React.ReactNode 
             subscriptions,
             addSubscription: (subscription) => {
                 setSubscriptions((previous) => [subscription, ...previous]);
+            },
+            removeSubscription: (subscriptionId) => {
+                setSubscriptions((previous) =>
+                    previous.filter((subscription) => subscription.id !== subscriptionId),
+                );
             },
         }),
         [subscriptions],

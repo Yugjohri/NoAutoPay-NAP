@@ -4,7 +4,7 @@ import {formatCurrency, formatStatusLabel, formatSubscriptionDateTime} from "@/l
 import classNames from "clsx";
 
 const SubscriptionCard = ({name, price, currency, icon, billing, color, category, plan,
-                              renewalDate,expanded, onPress,paymentMethod,startDate, status}: SubscriptionCardProps) => {
+                              renewalDate,expanded, onPress,paymentMethod,startDate, status, onCancelPress, isCancelling}: SubscriptionCardProps) => {
     return (
         <Pressable onPress={onPress} className = {classNames('sub-card', expanded ? 'sub-card-expanded' : 'bg-card')} style={!expanded && color ? {backgroundColor: color } :
             undefined}>
@@ -70,6 +70,20 @@ const SubscriptionCard = ({name, price, currency, icon, billing, color, category
                             </View>
                         </View>
                     </View>
+                    {onCancelPress ? (
+                        <Pressable
+                            className={classNames(
+                                "sub-cancel",
+                                isCancelling && "sub-cancel-disabled",
+                            )}
+                            onPress={onCancelPress}
+                            disabled={isCancelling}
+                        >
+                            <Text className="sub-cancel-text">
+                                {isCancelling ? "Removing..." : "Remove subscription"}
+                            </Text>
+                        </Pressable>
+                    ) : null}
                 </View>
             )}
 
