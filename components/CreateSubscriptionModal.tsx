@@ -112,6 +112,13 @@ const CreateSubscriptionModal = ({ visible, onClose, onCreate }: CreateSubscript
         };
 
         onCreate(subscription);
+        //
+        // posthog.capture('subscription_created',{
+        //     subscription_name: name.trim(),
+        //     subscription_price: priceValue,
+        //     subscription_frequency: frequency,
+        //     subscription_category: category,
+        // })
         handleClose();
     };
 
