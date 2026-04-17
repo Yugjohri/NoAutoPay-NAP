@@ -1,52 +1,176 @@
-# Welcome to your Expo app 👋
+# NoAutoPay (NAP)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+NoAutoPay is a React Native app (Expo + Expo Router) for tracking subscriptions, upcoming renewals, and spending insights.
 
-## Get started
+## Overview
 
-1. Install dependencies
+- Auth flow powered by Clerk (sign in / sign up / email verification).
+- Home dashboard with balance, upcoming renewals, and all subscriptions.
+- Create-subscription modal with validation, category, frequency, and icon auto-matching.
+- Insights screen with spend and renewal analytics.
+- Shared subscriptions state across tabs (add/remove updates all views immediately).
 
-   ```bash
-   npm install
-   ```
+## Features
 
-2. Start the app
+- **Authentication**: Clerk-based auth and protected tab routes.
+- **Subscription management**:
+  - Create subscriptions from Home.
+  - Auto-assign icon based on subscription name.
+  - Remove subscriptions with confirmation.
+- **Upcoming renewals**:
+  - Horizontal cards on Home.
+  - Renewal rollover logic for monthly/yearly plans.
+- **Insights**:
+  - Estimated monthly and annual spend.
+  - Category spend breakdown.
+  - Billing mix.
+  - Upcoming renewal summary.
+- **Analytics**:
+  - PostHog user identify + screen tracking.
 
-   ```bash
-   npx expo start
-   ```
+## Tech Stack
 
-In the output, you'll find options to open the app in a
+- **Framework**: Expo, React Native, Expo Router
+- **Language**: TypeScript
+- **Styling**: NativeWind + custom utility classes in `global.css`
+- **Auth**: Clerk (`@clerk/expo`)
+- **Analytics**: PostHog (`posthog-react-native`)
+- **Utilities**: `dayjs`, `clsx`
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Project Structure
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+```text
+app/
+  _layout.tsx                # Root providers (PostHog, Clerk, fonts)
+  onboarding.tsx
+  (auth)/                    # Auth routes
+    _layout.tsx
+    sign-in.tsx
+    sign-up.tsx
+  (tabs)/                    # Main authenticated app
+    _layout.tsx
+    index.tsx                # Home
+    subscriptions.tsx
+    insights.tsx
+    settings.tsx
+    subscriptions-context.tsx
 
-## Get a fresh project
+components/
+  CreateSubscriptionModal.tsx
+  SubscriptionCard.tsx
+  UpcomingSubscriptionCard.tsx
+  ListHeading.tsx
 
-When you're ready, run:
+constants/
+  data.ts
+  icons.ts
+  theme.ts
 
-```bash
-npm run reset-project
+lib/
+  utils.ts
+  subscription-icon.ts
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Environment Variables
 
-## Learn more
+Copy `.env.example` to `.env.local` and fill values:
 
-To learn more about developing your project with Expo, look at the following resources:
+```dotenv
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
+EXPO_PUBLIC_POSTHOG_KEY=your_posthog_api_key_here
+EXPO_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Without these values, app startup will fail in `app/_layout.tsx`.
 
-## Join the community
+## Getting Started
 
-Join our community of developers creating universal apps.
+### 1) Install dependencies
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```powershell
+npm install
+```
 
-# NoAutoPay-NAP
+### 2) Start Metro
+
+```powershell
+npm run start
+```
+
+### 3) Run on platform
+
+```powershell
+npm run android
+npm run ios
+npm run web
+```
+
+## Available Scripts
+
+- `npm run start` - start Expo dev server
+- `npm run android` - open on Android
+- `npm run ios` - open on iOS
+- `npm run web` - open on web
+- `npm run lint` - run Expo lint checks
+
+## Core Flows
+
+### Auth Flow
+
+- Users enter via `/(auth)` stack.
+- Signed-in users are redirected to `/(tabs)`.
+- Signed-out access to tabs redirects back to sign-in.
+
+### Create Subscription Flow
+
+- Open modal from Home `+` button.
+- Validate name and price.
+- Build subscription object (id, billing, start/renewal date, category, icon, color).
+- Insert into shared tab-level state.
+- New item appears in:
+  - Home "All Subscriptions"
+  - Home "Upcoming"
+  - `Subscriptions` tab
+  - `Insights` analytics
+
+### Remove Subscription Flow
+
+- Expand a subscription card.
+- Tap "Remove subscription".
+- Confirm action in native alert.
+- Item is removed from shared state and all screens update.
+
+## Design System
+
+- Global utility classes are defined in `global.css`.
+- Main component groups:
+  - auth (`auth-*`)
+  - modal (`modal-*`)
+  - picker/category (`picker-*`, `category-*`)
+  - home/subscription cards (`home-*`, `sub-*`, `upcoming-*`)
+  - insights (`insights-*`)
+
+## Troubleshooting
+
+- **Error**: `Add your Clerk Publishable Key to your .env file`
+  - Set `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` in `.env.local`.
+- **Error**: `Add your PostHog key to your .env.local file`
+  - Set `EXPO_PUBLIC_POSTHOG_KEY` (and optionally `EXPO_PUBLIC_POSTHOG_HOST`).
+- **No upcoming cards visible**
+  - Upcoming uses renewal rollover logic (`getNextRenewalDate`) based on billing cadence.
+- **Unexpected state reset after reload**
+  - Current subscription state is in-memory (not persisted to backend/database yet).
+
+## Notes
+
+- Currency display is currently formatted as INR in `lib/utils.ts`.
+- `app-example/` contains starter/sample reference code.
+- `reset-project` script is defined in `package.json`, but `scripts/reset-project.js` is not currently present at project root.
+
+## Roadmap
+
+- Persist subscriptions to backend/database.
+- Add edit subscription flow.
+- Add filters/sorting in Subscriptions tab.
+- Add notifications for upcoming renewals.
+- Add tests for utility/date logic and core flows.
