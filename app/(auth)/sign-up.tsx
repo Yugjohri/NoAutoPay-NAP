@@ -15,6 +15,7 @@ import {
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context'
 
 const SafeAreaView = styled(RNSafeAreaView)
+const inputStyle = { includeFontPadding: false, textAlignVertical: 'center' as const }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -209,6 +210,7 @@ export default function SignUp() {
                                         <Text className="auth-label">Verification code</Text>
                                         <TextInput
                                             className={`auth-input${codeError ? ' auth-input-error' : ''}`}
+                                            style={inputStyle}
                                             value={code}
                                             onChangeText={(v) => {
                                                 setCode(v)
@@ -295,6 +297,7 @@ export default function SignUp() {
                                     <Text className="auth-label">Email address</Text>
                                     <TextInput
                                         className={`auth-input${emailError ? ' auth-input-error' : ''}`}
+                                        style={inputStyle}
                                         value={emailAddress}
                                         onChangeText={(v) => {
                                             setEmailAddress(v)
@@ -319,6 +322,7 @@ export default function SignUp() {
                                     <Text className="auth-label">Password</Text>
                                     <TextInput
                                         className={`auth-input${passwordError ? ' auth-input-error' : ''}`}
+                                        style={inputStyle}
                                         value={password}
                                         onChangeText={(v) => {
                                             setPassword(v)
@@ -327,8 +331,11 @@ export default function SignUp() {
                                         placeholder="At least 8 characters"
                                         placeholderTextColor="rgba(0,0,0,0.3)"
                                         secureTextEntry
-                                        textContentType="newPassword"
-                                        autoComplete="new-password"
+                                        textContentType="none"
+                                        autoComplete="off"
+                                        autoCorrect={false}
+                                        autoCapitalize="none"
+                                        spellCheck={false}
                                         returnKeyType="next"
                                     />
                                     {passwordError ? (
@@ -343,6 +350,7 @@ export default function SignUp() {
                                     <Text className="auth-label">Confirm password</Text>
                                     <TextInput
                                         className={`auth-input${confirmPasswordError ? ' auth-input-error' : ''}`}
+                                        style={inputStyle}
                                         value={confirmPassword}
                                         onChangeText={(v) => {
                                             setConfirmPassword(v)
@@ -352,8 +360,11 @@ export default function SignUp() {
                                         placeholder="Re-enter your password"
                                         placeholderTextColor="rgba(0,0,0,0.3)"
                                         secureTextEntry
-                                        textContentType="newPassword"
-                                        autoComplete="new-password"
+                                        textContentType="none"
+                                        autoComplete="off"
+                                        autoCorrect={false}
+                                        autoCapitalize="none"
+                                        spellCheck={false}
                                         returnKeyType="done"
                                         onSubmitEditing={handleRegister}
                                     />
