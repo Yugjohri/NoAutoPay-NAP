@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { FlatList, KeyboardAvoidingView, Platform, Text, TextInput, View } from 'react-native'
+import { Alert, FlatList, KeyboardAvoidingView, Platform, Text, TextInput, View } from 'react-native'
 import { styled } from 'nativewind'
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context'
 import SubscriptionCard from '@/components/SubscriptionCard'
@@ -11,7 +11,7 @@ const inputStyle = { includeFontPadding: false, textAlignVertical: 'center' as c
 const Subscriptions = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null)
-    const { subscriptions } = useSubscriptions()
+    const { subscriptions, removeSubscription } = useSubscriptions()
 
     const normalizedQuery = searchQuery.trim().toLowerCase()
 
@@ -62,6 +62,25 @@ const Subscriptions = () => {
                                 onPress={() => {
                                     setExpandedSubscriptionId((current) =>
                                         current === item.id ? null : item.id,
+                                    )
+                                }}
+                                onCancelPress={() => {
+                                    Alert.alert(
+                                        'Remove subscription',
+                                        `Remove ${item.name} from your subscriptions?`,
+                                        [
+                                            { text: 'Cancel', style: 'cancel' },
+                                            {
+                                                text: 'Remove',
+                                                style: 'destructive',
+                                                onPress: () => {
+                                                    removeSubscription(item.id)
+                                                    setExpandedSubscriptionId((current) =>
+                                                        current === item.id ? null : current,
+                                                    )
+                                                },
+                                            },
+                                        ],
                                     )
                                 }}
                             />
